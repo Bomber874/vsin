@@ -16,18 +16,19 @@ function ToTG {
 }
 $O = New-ScheduledJobOption -WakeToRun -MultipleInstancePolicy IgnoreNew
 $T = New-JobTrigger -AtStartup -RandomDelay 00:00:30
-if ($reboot -eq "-reboot true") {
-    ToTG2("Server has been restarted")
+if ($reboot -eq "+") {
+    ToTG("Server has been restarted")
     choco install visualstudio2022-workload-manageddesktop -y --package-parameters "--no-includeRecommended"
-    ToTG2("Completed installing VS components")
+    ToTG("Completed installing VS components")
     Disable-ScheduledJob -ID 1 -Passthru
-    ToTG2("All done")
+    ToTG("All done")
 }else {
     ToTG("Installer Started")
-    Register-ScheduledJob -Name "InstallVS" -FilePath "C:\Users\Administrator\install.ps1" -ArgumentList "-reboot true" -ScheduledJobOption $O -Trigger $T
+    Register-ScheduledJob -Name "InstallVS" -FilePath "C:\Users\Administrator\install.ps1" -ArgumentList "+" -ScheduledJobOption $O -Trigger $T
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     ToTG("Choco installed, installing VS")
     choco install visualstudio2022community -y --package-parameters "--passive --locale ru-RU"
+    
     ToTG("VS installed, rebooting")
     Restart-Computer
 }
