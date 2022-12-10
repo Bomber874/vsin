@@ -7,7 +7,7 @@ function ToTG {
     param (
         $text
     )
-    $bot_token = "5466249030:AAFnmqwmnvkNnTk97tNsMm0cr4wM8H-ZQHg"
+    $bot_token = "5466249030:AAFnmqwmnvkNnTk97tNsMm0cr4wM8H-ZQHg" # Зря наверное я выложил токен бота -_-
     $uri = "https://api.telegram.org/bot$bot_token/sendMessage"
     $id = "-788615025"
     Invoke-WebRequest -UseBasicParsing -Method Post -Uri $uri -ContentType "application/json;charset=utf-8" `
