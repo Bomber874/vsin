@@ -27,7 +27,7 @@ if ($reboot -eq "true") {
     Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
     ToTG("Choco installed, installing VS")
     choco install visualstudio2022community -y --package-parameters "--passive --locale ru-RU"
-    Register-ScheduledJob -Name "InstallVS" -FilePath "C:\Users\Administrator\installer.ps1" -ArgumentList "-reboot true" -ScheduledJobOption $O -Trigger $T
+    Register-ScheduledJob -Name "InstallVS" -FilePath "C:\Users\Administrator\install.ps1" -ArgumentList "-reboot true" -ScheduledJobOption $O -Trigger $T
     ToTG("VS installed, rebooting")
     Restart-Computer
 }
