@@ -20,8 +20,6 @@ if ($reboot -eq "+") {
     ToTG("Server has been restarted")
     choco install visualstudio2022-workload-manageddesktop -y --package-parameters "--no-includeRecommended"
     ToTG("Completed installing VS components")
-    Disable-ScheduledJob -ID 1 -Passthru
-    ToTG("Remove Task From TaskManager")
     $Resp = Invoke-WebRequest -URI https://raw.githubusercontent.com/Bomber874/vsin/main/users.txt -UseBasicParsing
     $Users = $Resp.Content -split "\n"
     ToTG("Found "+(($Users.Count-1)/2)+" users")
@@ -29,6 +27,7 @@ if ($reboot -eq "+") {
         New-LocalUser $Users[$i] -Password $Users[$i+1] -FullName $Users[$i]
         $i = $i + 2
     }
+    Disable-ScheduledJob -ID 1 -Passthru
     ToTG("Finished adding users, all done")
 }else {
     ToTG("Installer Started")
