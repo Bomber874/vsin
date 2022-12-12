@@ -17,15 +17,18 @@ function ToTG {
 $O = New-ScheduledJobOption -WakeToRun -MultipleInstancePolicy IgnoreNew
 $T = New-JobTrigger -AtStartup -RandomDelay 00:00:30
 if ($reboot -eq "+") {
-    ToTG("Server has been restarted")
+    ToTG("Server has been restarted, installing .net desktop")
     choco install visualstudio2022-workload-manageddesktop -y --package-parameters "--no-includeRecommended"
+    ToTG("Installing .net-4.8")
+    choco install netfx-4.8-devpack
     ToTG("Completed installing VS components")
     $Resp = Invoke-WebRequest -URI https://raw.githubusercontent.com/Bomber874/vsin/main/users.txt -UseBasicParsing
     $Users = $Resp.Content -split "\n"
     ToTG("Found "+(($Users.Count-1)/2)+" users")
     for ($i = 0; $i -lt $Users.Count-1;) {
         $P = ConvertTo-SecureString $Users[$i+1] -AsPlainText -Force
-        New-LocalUser $Users[$i] -Password $P -FullName $Users[$i]
+        New-LocalUser $Users[$i] -Password $P -FullName $Users[$i] #Remote Desktop Users
+        Add-LocalGroupMember -Group "Remote Desktop Users" -Member $Users[$i]
         $i = $i + 2
     }
     Disable-ScheduledJob -ID 1 -Passthru
