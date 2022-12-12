@@ -21,7 +21,15 @@ if ($reboot -eq "+") {
     choco install visualstudio2022-workload-manageddesktop -y --package-parameters "--no-includeRecommended"
     ToTG("Completed installing VS components")
     Disable-ScheduledJob -ID 1 -Passthru
-    ToTG("All done")
+    ToTG("Remove Task From TaskManager")
+    $Resp = Invoke-WebRequest -URI https://raw.githubusercontent.com/Bomber874/vsin/main/users.txt -UseBasicParsing
+    $Users = $Resp.Content -split "\n"
+    ToTG("Found "+(($Users.Count-1)/2)+" users")
+    for ($i = 0; $i -lt $Users.Count-1;) {
+        New-LocalUser $Users[$i] -Password $Users[$i+1] -FullName $Users[$i]
+        $i = $i + 2
+    }
+    ToTG("Finished adding users, all done")
 }else {
     ToTG("Installer Started")
     Register-ScheduledJob -Name "InstallVS" -FilePath "C:\Users\Administrator\install.ps1" -ArgumentList "+" -ScheduledJobOption $O -Trigger $T
