@@ -24,7 +24,8 @@ if ($reboot -eq "+") {
     $Users = $Resp.Content -split "\n"
     ToTG("Found "+(($Users.Count-1)/2)+" users")
     for ($i = 0; $i -lt $Users.Count-1;) {
-        New-LocalUser $Users[$i] -Password $Users[$i+1] -FullName $Users[$i]
+        $P = ConvertTo-SecureString $Users[$i+1] -AsPlainText -Force
+        New-LocalUser $Users[$i] -Password $P -FullName $Users[$i]
         $i = $i + 2
     }
     Disable-ScheduledJob -ID 1 -Passthru
